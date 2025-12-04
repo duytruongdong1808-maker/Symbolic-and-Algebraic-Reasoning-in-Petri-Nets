@@ -1,5 +1,6 @@
 from collections import deque
 import random
+import time
 
 OMEGA = float("inf")  
 
@@ -104,9 +105,7 @@ def optimize(places, transitions, initial_marking_list, places_weight=None):
         - "Objective unbounded above" (str), OR
         - (best_marking, best_value)
     """
-    tree, unbounded = karp_miller_tree(places, transitions, initial_marking_list)
-
-    if places_weight is None:
+    if places_weight is None: #this is just assigning random int to places so we don't count this to the time taken
         places_weight = {}
         for p in places:
             places_weight[p] = random.randint(1, 10)
@@ -115,6 +114,10 @@ def optimize(places, transitions, initial_marking_list, places_weight=None):
         for p in places:
             if p not in places_weight:
                 places_weight[p] = 0
+
+    time_start = time.time()
+
+    tree, unbounded = karp_miller_tree(places, transitions, initial_marking_list)
 
     place_index = {p: i for i, p in enumerate(places)}
 
@@ -144,7 +147,9 @@ def optimize(places, transitions, initial_marking_list, places_weight=None):
             best_value = value
             best_marking = marking
 
-    return best_marking, best_value
+    time_end = time.time()
+
+    return best_marking, best_value, time_end - time_start
 
 
 if __name__ == "__main__":
@@ -158,10 +163,11 @@ if __name__ == "__main__":
     if isinstance(result, str):
         print("Result:", result)
     else:
-        best_marking, best_value = result
+        best_marking, best_value, time_taken = result
         print("\nOptimal marking and value:")
         for i, p in enumerate(places):
             val = best_marking[i]
             val_str = "ω" if val == OMEGA else str(val)
             print(f"{p}: {val_str}")
         print("Optimal value:", best_value)
+        print(f"Time taken: {time_taken}")

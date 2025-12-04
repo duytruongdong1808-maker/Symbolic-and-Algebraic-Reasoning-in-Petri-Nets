@@ -32,13 +32,14 @@ def run_all(filename):
     if isinstance(opt_result, str):
         print(opt_result)
     else:
-        best_marking, best_value = opt_result
+        best_marking, best_value, time_taken = opt_result
         print("Best value:", best_value)
         print("Best marking:")
         for i, p in enumerate(places):
             val = best_marking[i]
             val_str = "ω" if val == float("inf") else str(val)
             print(f"  {p}: {val_str}")
+        print(f"Time taken {time_taken: .20f}")
 
 
 if __name__ == "__main__":
